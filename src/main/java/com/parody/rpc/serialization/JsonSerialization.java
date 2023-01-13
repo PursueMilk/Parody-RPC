@@ -7,7 +7,6 @@ import java.io.IOException;
 
 public class JsonSerialization implements RpcSerialization {
 
-
     @Override
     public <T> byte[] serialize(T obj) throws IOException {
         //将Java对象序列化为JSON字符串，返回JSON字符串的utf-8 bytes

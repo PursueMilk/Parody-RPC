@@ -1,17 +1,24 @@
 package com.parody.rpc.protocol;
 
+
+import com.parody.rpc.serialization.SerializationTypeEnum;
+import lombok.Data;
+
+import java.util.UUID;
+
+@Data
 public class MessageHeader {
 
     /**
      * 魔数
      */
-    private short magic;
+    private int magic;
 
 
     /**
      * 协议版本号
      */
-    private String version;
+    private byte version;
 
 
     /**
@@ -22,7 +29,7 @@ public class MessageHeader {
     /**
      * 报文类型
      */
-    private byte status;
+    private byte msgType;
 
     /**
      * 消息ID
@@ -36,4 +43,13 @@ public class MessageHeader {
     private int msgLen;
 
 
+    public static MessageHeader build(String serialization){
+        MessageHeader messageHeader = new MessageHeader();
+        messageHeader.setMagic(ProtocolConstants.MAGIC);
+        messageHeader.setVersion(ProtocolConstants.VERSION);
+        messageHeader.setRequestId(UUID.randomUUID().toString().replaceAll("-",""));
+        messageHeader.setMsgType(MsgType.REQUEST.getType());
+        messageHeader.setSerialization(SerializationTypeEnum.parseByName(serialization).getType());
+        return messageHeader;
+    }
 }

@@ -12,7 +12,7 @@ public class RpcResponse<T>  implements Serializable {
     /**
      * 响应状态码
      */
-    private Integer code;
+    private byte code;
 
 
     /**
