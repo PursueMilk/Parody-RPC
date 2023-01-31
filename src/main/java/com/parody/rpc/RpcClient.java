@@ -6,7 +6,8 @@ import com.parody.rpc.service.HelloService;
 public class RpcClient {
 
     public static void main(String[] args) {
+        //创建代理对象
         HelloService helloService = ClientProxy.getProxy(HelloService.class);
-        System.out.println(helloService.sayHello("小明"));
+        System.out.println(helloService.sayHello("World"));
     }
 }

@@ -1,6 +1,7 @@
 package com.parody.rpc.transport.server;
 
 
+import com.parody.rpc.message.RpcRequest;
 import com.parody.rpc.message.RpcResponse;
 import com.parody.rpc.nettyHanlder.RpcDecoder;
 import com.parody.rpc.nettyHanlder.RpcEncoder;
@@ -40,10 +41,10 @@ public class NettyRpcServer implements RpcServer {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline()
                                     .addLast(new IdleStateHandler(30,0,0, TimeUnit.SECONDS))
-                                    //协议编码
-                                    .addLast(new RpcDecoder<RpcResponse>())
                                     //协议解码
-                                    .addLast(new RpcEncoder())
+                                    .addLast(new RpcDecoder())
+                                    //协议编码
+                                    .addLast(new RpcEncoder<RpcResponse>())
                                     //请求处理器
                                     .addLast(new RpcRequestHandler());
                         }

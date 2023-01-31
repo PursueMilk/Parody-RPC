@@ -9,7 +9,7 @@ import java.net.InetSocketAddress;
 public class NacosServerDiscovery implements ServerDiscovery {
 
     @Override
-    public InetSocketAddress serverDiscovery(String serverName) {
+    public  InetSocketAddress serverDiscovery(String serverName) {
         try {
             Instance instance = NacosUtils.getInstance(serverName);
             return new InetSocketAddress(instance.getIp(), instance.getPort());

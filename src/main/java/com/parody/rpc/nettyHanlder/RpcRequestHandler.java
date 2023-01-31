@@ -19,10 +19,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-
+/**
+ * 处理客户端请求
+ * @param <T>
+ */
 @Slf4j
 public class RpcRequestHandler<T> extends SimpleChannelInboundHandler<MessageProtocol<T>> {
 
+    //处理请求的线程池
     private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10000));
 
 
@@ -31,6 +35,7 @@ public class RpcRequestHandler<T> extends SimpleChannelInboundHandler<MessagePro
         // 多线程处理每个请求
         threadPoolExecutor.submit(() -> {
             MessageHeader header = rpcRequestMessageProtocol.getHeader();
+            //处理心跳包
             if (header.getMsgType()==MsgType.HEART.getType()){
                 log.info("收到客户端的心跳包");
                 return;
@@ -40,6 +45,7 @@ public class RpcRequestHandler<T> extends SimpleChannelInboundHandler<MessagePro
             // 设置头部消息类型为响应
             header.setMsgType(MsgType.RESPONSE.getType());
             try {
+                //获得方法返回值
                 Object result = handle((RpcRequest) rpcRequestMessageProtocol.getBody());
                 response.setData(result);
                 response.setCode(MsgStatus.SUCCESS.getCode());

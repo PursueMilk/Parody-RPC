@@ -36,10 +36,10 @@ public class NettyRpcClient implements RpcClient {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         socketChannel.pipeline()
                                 .addLast(new IdleStateHandler(0, 15, 0, TimeUnit.SECONDS))
-                                //编码
-                                .addLast(new RpcDecoder<RpcRequest>())
                                 //解码
-                                .addLast(new RpcEncoder())
+                                .addLast(new RpcDecoder())
+                                //编码
+                                .addLast(new RpcEncoder<RpcRequest>())
                                 //响应处理
                                 .addLast(new RpcResponseHandler());
                     }

@@ -15,9 +15,6 @@ public final class LocalServerCache {
 
     public static Object get(String serverName) {
         Object server = serverCacheMap.get(serverName);
-        if (server == null) {
-            throw new RuntimeException("未发现该服务");
-        }
         return server;
     }
 }

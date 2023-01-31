@@ -16,12 +16,14 @@ import java.util.jar.JarFile;
  * 扫描路径下所有的文件名工具类
  */
 public class PackageScanUtils {
+
     //获取main方法所在的类名
     public static String getStackTrace() {
         StackTraceElement[] stack = new Throwable().getStackTrace();
         return stack[stack.length - 1].getClassName();
     }
 
+    //获取该路径下所有的类对象
     public static Set<Class<?>> getClasses(String packageName) {
         Set<Class<?>> classes = new LinkedHashSet<>();
         boolean recursive = true;
@@ -95,7 +97,6 @@ public class PackageScanUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return classes;
     }
 

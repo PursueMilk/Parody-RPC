@@ -31,7 +31,7 @@ public class RpcClientConfig {
         for (Field field : fields) {
             String name = "client." + field.getName();
             String value = properties.getProperty(name);
-            if (Objects.nonNull(value)) {
+            if (Objects.nonNull(value) && !name.equals("client.version")) {
                 field.setAccessible(true);
                 if (name.equals("client.timeout")) {
                     field.set(clientProperties, Integer.valueOf(value));

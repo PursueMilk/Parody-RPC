@@ -7,6 +7,6 @@ import com.parody.rpc.annotation.RpcService;
 public class HelloServiceImpl implements HelloService {
     @Override
     public String sayHello(String name) {
-        return "你好, " + name;
+        return "Hello, " + name;
     }
 }

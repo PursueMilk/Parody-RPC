@@ -18,14 +18,25 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 
-
+/**
+ * 代理类
+ */
 @Slf4j
 public class ClientProxy implements InvocationHandler {
 
+    /**
+     * nacos的服务发现
+     */
     private ServerDiscovery discovery;
 
+    /**
+     * 配置类
+     */
     private RpcClientProperties properties;
 
+    /**
+     * 接口类对象
+     */
     private Class<?> clazz;
 
 
@@ -48,16 +59,23 @@ public class ClientProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        InetSocketAddress address=discovery.serverDiscovery(clazz.getSimpleName()+"-"+properties.getVersion());
+        //服务发现
+        String serverName=clazz.getSimpleName()+"-"+properties.getVersion();
+        InetSocketAddress address=discovery.serverDiscovery(serverName);
         MessageProtocol<RpcRequest> messageProtocol = new MessageProtocol<>();
         //设置请求头
         messageProtocol.setHeader(MessageHeader.build(properties.getSerialization()));
         //设置请求体
         RpcRequest request = new RpcRequest();
+        //接口名
         request.setInterfaceName(clazz.getSimpleName());
+        //方法名
         request.setMethodName(method.getName());
+        //服务版本号
         request.setVersion(properties.getVersion());
+        //参数类型
         request.setParameterTypes(method.getParameterTypes());
+        //参数值
         request.setParameters(args);
         messageProtocol.setBody(request);
         //设置其他信息

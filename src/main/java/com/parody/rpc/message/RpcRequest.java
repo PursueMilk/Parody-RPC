@@ -34,8 +34,4 @@ public class RpcRequest implements Serializable {
      * 版本号
      */
     private String version;
-
-
-
-
 }

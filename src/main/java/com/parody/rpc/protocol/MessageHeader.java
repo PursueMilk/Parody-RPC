@@ -44,6 +44,7 @@ public class MessageHeader {
 
 
     public static MessageHeader build(String serialization){
+        //初始化请求头
         MessageHeader messageHeader = new MessageHeader();
         messageHeader.setMagic(ProtocolConstants.MAGIC);
         messageHeader.setVersion(ProtocolConstants.VERSION);

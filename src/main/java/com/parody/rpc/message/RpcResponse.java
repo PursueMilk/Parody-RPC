@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class RpcResponse<T>  implements Serializable {
+public class RpcResponse implements Serializable {
 
     private static final long serialVersionUID = 715745410605631236L;
 
@@ -24,6 +24,6 @@ public class RpcResponse<T>  implements Serializable {
     /**
      * 响应数据内容
      */
-    private T data;
+    private Object data;
 
 }

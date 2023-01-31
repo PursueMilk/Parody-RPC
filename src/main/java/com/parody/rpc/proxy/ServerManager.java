@@ -8,12 +8,14 @@ import com.parody.rpc.transport.server.LocalServerCache;
 import com.parody.rpc.transport.server.NettyRpcServer;
 import com.parody.rpc.transport.server.RpcServer;
 import com.parody.rpc.utils.PackageScanUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
 
+@Slf4j
 public class ServerManager {
 
     private RpcServer rpcServer;
@@ -22,6 +24,7 @@ public class ServerManager {
 
     private Integer port;
 
+    //服务注册
     private ServerRegister register;
 
 
@@ -29,6 +32,7 @@ public class ServerManager {
         this.rpcServer = new NettyRpcServer();
         if (ip == null) {
             try {
+                //获取本地的ip地址
                 this.ip = InetAddress.getLocalHost().getHostAddress();
             } catch (UnknownHostException e) {
                 throw new RuntimeException(e);
@@ -51,6 +55,7 @@ public class ServerManager {
 
 
     private void autoRegistry() {
+        //获取启动类的路径
         String mainClassPath = PackageScanUtils.getStackTrace();
         Class<?> mainClass;
         try {
@@ -70,19 +75,21 @@ public class ServerManager {
         }
         //获取所有类的set集合
         Set<Class<?>> set = PackageScanUtils.getClasses(annotationValue);
-        //System.out.println(set.size());
         for (Class<?> c : set) {
-            //只有有@RpcService注解的才注册
+            //@RpcService注解的类才能注册
             if (c.isAnnotationPresent(RpcService.class)) {
                 RpcService service = c.getAnnotation(RpcService.class);
+                //获取注解属性中的接口名
                 String interfaceName = service.interfaceType().getSimpleName();
+                //注册中心的服务名：接口名+版本号
                 String ServerNameValue = interfaceName + "-" + service.version();
                 Object object;
                 try {
+                    //创建实例
                     object = c.newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                    System.err.println("创建对象" + c + "发生错误");
+                    log.error("{}",e);
+                    log.error("创建对象{}发生错误",c);
                     continue;
                 }
                 //注解的值如果为空，使用类名
@@ -100,6 +107,5 @@ public class ServerManager {
         LocalServerCache.add(serverName, object);
         //注册到Nacos
         register.serverRegister(serverName, new InetSocketAddress(ip, port));
-
     }
 }
