@@ -12,7 +12,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RpcService {
-    Class<?> interfaceType();
 
-    String version() default "1.0";
+
+    String name() default "";
+
 }

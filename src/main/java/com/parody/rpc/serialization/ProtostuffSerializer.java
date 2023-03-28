@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Protostuff序列化
+ */
 public class ProtostuffSerializer implements RpcSerialization {
 
     private LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
@@ -18,7 +21,7 @@ public class ProtostuffSerializer implements RpcSerialization {
 
 
     @Override
-    public <T> byte[] serialize(T obj) throws IOException {
+    public <T> byte[] serialize(T obj) {
         Class clazz = obj.getClass();
         Schema schema = getSchema(clazz);
         byte[] data;
@@ -32,7 +35,7 @@ public class ProtostuffSerializer implements RpcSerialization {
 
 
     @Override
-    public <T> T deserialize(byte[] data, Class<T> clz) throws IOException {
+    public <T> T deserialize(byte[] data, Class<T> clz) {
         Schema schema = getSchema(clz);
         Object obj = schema.newMessage();
         ProtostuffIOUtil.mergeFrom(data, obj, schema);

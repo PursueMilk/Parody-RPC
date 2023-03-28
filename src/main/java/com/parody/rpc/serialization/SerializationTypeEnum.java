@@ -3,8 +3,7 @@ package com.parody.rpc.serialization;
 import lombok.Getter;
 
 /**
- * @Author: changjiu.wang
- * @Date: 2021/7/25 5:28
+ * 序列化对应的枚举对象
  */
 public enum SerializationTypeEnum {
 

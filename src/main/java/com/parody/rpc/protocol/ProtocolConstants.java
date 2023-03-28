@@ -1,8 +1,7 @@
 package com.parody.rpc.protocol;
 
 /**
- * @Author: changjiu.wang
- * @Date: 2021/7/24 22:58
+ * 协议中的常量
  */
 public class ProtocolConstants {
 

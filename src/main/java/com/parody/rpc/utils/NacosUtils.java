@@ -7,6 +7,8 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.parody.rpc.balancer.LoadBalance;
 import com.parody.rpc.balancer.LoadBalanceFactory;
 import com.parody.rpc.config.RpcClientProperties;
+import com.parody.rpc.exception.RpcException;
+import io.protostuff.Rpc;
 
 import java.net.InetSocketAddress;
 import java.util.HashSet;
@@ -14,14 +16,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Nacos 工具类
+ */
 public class NacosUtils {
 
+    // Nacos 操作对象
     private static final NamingService namingService;
 
+    // 服务端注册的服务名
     private static final Set<String> serviceNames = new HashSet<>();
 
+    // 服务端地址
     private static InetSocketAddress address;
 
+    // 配置类
     private static final RpcClientProperties properties;
 
     static {
@@ -77,11 +86,10 @@ public class NacosUtils {
                 try {
                     namingService.deregisterInstance(serviceName, host, port);
                 } catch (NacosException e) {
-                    new RuntimeException("注销服务失败");
+                    new RpcException("注销服务失败");
                 }
             }
         }
     }
-
 
 }

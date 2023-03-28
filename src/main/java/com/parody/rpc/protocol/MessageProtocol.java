@@ -2,6 +2,9 @@ package com.parody.rpc.protocol;
 
 import lombok.Data;
 
+/**
+ * 通信协议
+ */
 @Data
 public class MessageProtocol<T> {
 

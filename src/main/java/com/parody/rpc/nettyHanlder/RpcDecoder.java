@@ -1,5 +1,6 @@
 package com.parody.rpc.nettyHanlder;
 
+import com.parody.rpc.exception.RpcException;
 import com.parody.rpc.message.HeartBeatMessage;
 import com.parody.rpc.message.RpcRequest;
 import com.parody.rpc.message.RpcResponse;
@@ -15,6 +16,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -22,43 +24,44 @@ import java.util.List;
  * 解码
  */
 @Slf4j
-public class RpcDecoder extends ByteToMessageDecoder{
+public class RpcDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        // 可读的数据小于请求头总的大小，直接丢弃
         if (in.readableBytes() < ProtocolConstants.HEADER_TOTAL_LEN) {
-            // 可读的数据小于请求头总的大小 直接丢弃
             return;
         }
         // 标记 ByteBuf 读指针位置
         in.markReaderIndex();
-
         // 魔数
         int magic = in.readInt();
         if (magic != ProtocolConstants.MAGIC) {
-            throw new IllegalArgumentException("magic number is illegal, " + magic);
+            throw new RpcException("magic number is illegal, " + magic);
         }
-
+        // 获取协议版本号
         byte version = in.readByte();
+        // 序列化
         byte serializeType = in.readByte();
+        // 消息类型
         byte msgType = in.readByte();
+        // 获取消息 ID
         CharSequence requestId = in.readCharSequence(ProtocolConstants.REQ_LEN, Charset.forName("UTF-8"));
-
+        // 读取数据的长度
         int dataLength = in.readInt();
+        // 可读的数据长度小于请求体长度，直接丢弃并重置读指针位置
         if (in.readableBytes() < dataLength) {
-            // 可读的数据长度小于 请求体长度 直接丢弃并重置 读指针位置
             in.resetReaderIndex();
             return;
         }
+        // 读取数据
         byte[] data = new byte[dataLength];
         in.readBytes(data);
-
         //消息类型
         MsgType msgTypeEnum = MsgType.findByType(msgType);
         if (msgTypeEnum == null) {
             return;
         }
-
         //设置消息头
         MessageHeader header = new MessageHeader();
         header.setMagic(magic);
@@ -67,37 +70,35 @@ public class RpcDecoder extends ByteToMessageDecoder{
         header.setRequestId(String.valueOf(requestId));
         header.setMsgType(msgType);
         header.setMsgLen(dataLength);
-        log.info("{}",header);
-        //序列化数据
+        log.info("{}", header);
+        //序列化实例
         RpcSerialization rpcSerialization = SerializationFactory.getRpcSerialization(SerializationTypeEnum.parseByType(serializeType));
-        switch (msgTypeEnum) {
+        // 获取数据
+        MessageProtocol protocol = packageMessage(msgTypeEnum, data, rpcSerialization);
+        // 设置请求头
+        protocol.setHeader(header);
+        out.add(protocol);
+    }
+
+
+    /**
+     * 消息体的反序列化及封装
+     */
+    public MessageProtocol packageMessage(MsgType msgType, byte[] data, RpcSerialization rpcSerialization) throws IOException {
+        MessageProtocol protocol = new MessageProtocol<>();
+        Object body = null;
+        switch (msgType) {
             case REQUEST:
-                RpcRequest request = rpcSerialization.deserialize(data, RpcRequest.class);
-                if (request != null) {
-                    MessageProtocol<RpcRequest> protocol = new MessageProtocol<>();
-                    protocol.setHeader(header);
-                    protocol.setBody(request);
-                    out.add(protocol);
-                }
+                body = rpcSerialization.deserialize(data, RpcRequest.class);
                 break;
             case RESPONSE:
-                RpcResponse response = rpcSerialization.deserialize(data, RpcResponse.class);
-                if (response != null) {
-                    MessageProtocol<RpcResponse> protocol = new MessageProtocol<>();
-                    protocol.setHeader(header);
-                    protocol.setBody(response);
-                    out.add(protocol);
-                }
+                body = rpcSerialization.deserialize(data, RpcResponse.class);
                 break;
             case HEART:
-                HeartBeatMessage heartBeatMessage = rpcSerialization.deserialize(data, HeartBeatMessage.class);
-                if (heartBeatMessage != null) {
-                    MessageProtocol<HeartBeatMessage> protocol = new MessageProtocol<>();
-                    protocol.setHeader(header);
-                    protocol.setBody(heartBeatMessage);
-                    out.add(protocol);
-                }
+                body = rpcSerialization.deserialize(data, HeartBeatMessage.class);
                 break;
         }
+        protocol.setBody(body);
+        return protocol;
     }
 }

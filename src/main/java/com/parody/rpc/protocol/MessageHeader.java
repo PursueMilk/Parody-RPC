@@ -1,6 +1,5 @@
 package com.parody.rpc.protocol;
 
-
 import com.parody.rpc.serialization.SerializationTypeEnum;
 import lombok.Data;
 
@@ -43,14 +42,18 @@ public class MessageHeader {
     private int msgLen;
 
 
-    public static MessageHeader build(String serialization){
+    /**
+     * 初始化请求头
+     */
+    public static MessageHeader build(String serialization) {
         //初始化请求头
         MessageHeader messageHeader = new MessageHeader();
         messageHeader.setMagic(ProtocolConstants.MAGIC);
         messageHeader.setVersion(ProtocolConstants.VERSION);
-        messageHeader.setRequestId(UUID.randomUUID().toString().replaceAll("-",""));
+        messageHeader.setRequestId(UUID.randomUUID().toString().replaceAll("-", ""));
         messageHeader.setMsgType(MsgType.REQUEST.getType());
         messageHeader.setSerialization(SerializationTypeEnum.parseByName(serialization).getType());
         return messageHeader;
     }
+
 }

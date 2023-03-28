@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 
 @Data
 @Builder
@@ -18,12 +19,8 @@ public class RequestMetaData implements Serializable {
     /**
      * 地址
      */
-    private String address;
+    private InetSocketAddress address;
 
-    /**
-     * 端口
-     */
-    private Integer port;
 
     /**
      * 服务调用超时

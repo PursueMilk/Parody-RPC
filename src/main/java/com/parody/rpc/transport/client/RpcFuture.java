@@ -3,9 +3,7 @@ package com.parody.rpc.transport.client;
 import java.util.concurrent.*;
 
 /**
- *  结果异步返回
- * @Author: changjiu.wang
- * @Date: 2021/7/25 14:23
+ * 接收服务端返回的结果
  */
 public class RpcFuture<T> implements Future<T> {
 
@@ -33,7 +31,6 @@ public class RpcFuture<T> implements Future<T> {
 
     /**
      *  响应数据不为空 表示完成
-     * @return
      */
     @Override
     public boolean isDone() {
@@ -42,9 +39,6 @@ public class RpcFuture<T> implements Future<T> {
 
     /**
      *  等待获取数据，直到有结果 也就是 countDownLatch 的值减到 0
-     * @return
-     * @throws InterruptedException
-     * @throws ExecutionException
      */
     @Override
     public T get() throws InterruptedException {
@@ -55,12 +49,6 @@ public class RpcFuture<T> implements Future<T> {
 
     /**
      *  超时等待 获取数据
-     * @param timeout
-     * @param unit
-     * @return
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws TimeoutException
      */
     @Override
     public T get(long timeout, TimeUnit unit) throws InterruptedException {
@@ -71,7 +59,7 @@ public class RpcFuture<T> implements Future<T> {
     }
 
 
-    public void setResponse(T response){
+    public void setResponse(T response) {
         this.response = response;
         countDownLatch.countDown();
     }

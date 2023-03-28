@@ -14,38 +14,29 @@ import java.nio.charset.Charset;
 
 /**
  * 编码
- * @param <T>
  */
 @Slf4j
 public class RpcEncoder<T> extends MessageToByteEncoder<MessageProtocol<T>> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, MessageProtocol<T> messageProtocol, ByteBuf byteBuf) throws Exception {
-//        log.info("{}",messageProtocol);
+        // 消息头
         MessageHeader header = messageProtocol.getHeader();
         // 魔数
         byteBuf.writeInt(header.getMagic());
-
         // 协议版本号
         byteBuf.writeByte(header.getVersion());
-
         // 序列化算法
         byteBuf.writeByte(header.getSerialization());
-
         // 报文类型
         byteBuf.writeByte(header.getMsgType());
-
         // 消息 ID
         byteBuf.writeCharSequence(header.getRequestId(), Charset.forName("UTF-8"));
-
-
+        // 对消息体进行序列化
         RpcSerialization rpcSerialization = SerializationFactory.getRpcSerialization(SerializationTypeEnum.parseByType(header.getSerialization()));
-
         byte[] data = rpcSerialization.serialize(messageProtocol.getBody());
-
         // 数据长度
         byteBuf.writeInt(data.length);
-
         // 数据内容
         byteBuf.writeBytes(data);
     }

@@ -2,6 +2,9 @@ package com.parody.rpc.protocol;
 
 import lombok.Getter;
 
+/**
+ * 请求结果
+ */
 public enum MsgStatus {
     SUCCESS((byte)0),
     FAIL((byte)1);

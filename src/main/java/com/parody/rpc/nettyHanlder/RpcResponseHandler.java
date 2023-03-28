@@ -18,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 数据响应处理器
- *
- * @Author: changjiu.wang
- * @Date: 2021/7/25 15:09
  */
 @Slf4j
 public class RpcResponseHandler extends SimpleChannelInboundHandler<MessageProtocol<RpcResponse>> {
@@ -38,6 +35,7 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<MessageProto
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
             if (state == IdleState.WRITER_IDLE) {
+                // 封装心跳包
                 MessageProtocol<HeartBeatMessage> messageProtocol = new MessageProtocol<>();
                 MessageHeader header = MessageHeader.build(RpcClientProperties.getProperties().getSerialization());
                 header.setMsgType(MsgType.HEART.getType());

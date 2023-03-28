@@ -3,7 +3,7 @@ package com.parody.rpc.config;
 import lombok.Data;
 
 /**
- * 配置类采用单例模式
+ * 配置类
  */
 @Data
 public class RpcClientProperties {
@@ -29,20 +29,15 @@ public class RpcClientProperties {
     private Integer timeout = 3000;
 
 
-    /**
-     * 服务版本号
-     */
-    private String version = "1.0";
 
-
+    // 单例
     private static RpcClientProperties rpcClientProperties = new RpcClientProperties();
-
 
     private RpcClientProperties() {}
 
+    // 加载配置类
     static {
         try {
-            //加载自定义配置
             RpcClientConfig.fillProperties(rpcClientProperties);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -51,8 +46,6 @@ public class RpcClientProperties {
 
     /**
      * 获取配置类对象
-     *
-     * @return
      */
     public static RpcClientProperties getProperties() {
         return rpcClientProperties;

@@ -1,9 +1,10 @@
-package com.parody.rpc.service;
+package com.parody.rpc.service.impl;
 
 
 import com.parody.rpc.annotation.RpcService;
+import com.parody.rpc.service.HelloService;
 
-@RpcService(interfaceType = HelloService.class)
+@RpcService
 public class HelloServiceImpl implements HelloService {
     @Override
     public String sayHello(String name) {

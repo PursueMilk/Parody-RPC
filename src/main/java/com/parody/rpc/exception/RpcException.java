@@ -1,5 +1,8 @@
 package com.parody.rpc.exception;
 
+/**
+ * 异常类
+ */
 public class RpcException extends RuntimeException{
 
     public RpcException() {

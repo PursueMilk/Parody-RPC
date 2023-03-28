@@ -5,6 +5,9 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 轮询
+ */
 public class FullRoundBalance implements LoadBalance{
 
 
@@ -12,7 +15,6 @@ public class FullRoundBalance implements LoadBalance{
 
     /**
      * 防止Integer越界 超过Integer最大值
-     * @return
      */
     private final int getAndIncrement() {
         int current;

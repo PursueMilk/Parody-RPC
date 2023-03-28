@@ -30,8 +30,4 @@ public class RpcRequest implements Serializable {
      */
     private Object[] parameters;
 
-    /**
-     * 版本号
-     */
-    private String version;
 }

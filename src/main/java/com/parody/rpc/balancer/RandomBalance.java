@@ -5,6 +5,9 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 随机选择
+ */
 public class RandomBalance implements LoadBalance {
 
     private final Random random = new Random();
