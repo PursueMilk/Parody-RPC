@@ -15,7 +15,6 @@ public class SerializationTest {
     {
         request.setInterfaceName("HelloService");
         request.setMethodName("test");
-        request.setVersion("1.0");
         request.setParameterTypes(new Class[]{String.class});
         request.setParameters(new Object[]{"参数"});
         response.setCode(MsgStatus.SUCCESS.getCode());
@@ -39,9 +38,9 @@ public class SerializationTest {
     @Test
     public void ProtostuffTest() throws IOException {
         System.out.println(response);
-        ProtostuffSerializer proto=new ProtostuffSerializer();
-        byte[] data=proto.serialize(response);
-        RpcResponse dser=proto.deserialize(data,RpcResponse.class);
+        ProtostuffSerializer proto = new ProtostuffSerializer();
+        byte[] data = proto.serialize(response);
+        RpcResponse dser = proto.deserialize(data, RpcResponse.class);
         System.out.println(dser);
     }
 
